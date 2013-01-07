@@ -17,31 +17,32 @@ import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 
 /**
- * <p> Réprésente un item de complétion ISO369-1 : label, icône, ... ainsi que
- * l'action à exécuter lorsque l'utilisateur choisi l'item. </p>
- *
+ * <p>Defines an XHTML attribute completion item.</p>
+ * 
+ * <p>This class is a generic completion item : it's useful for most attribute completion use cases.</p>
+ * 
  * @author oschmitt
  */
 public class AttributeCompletionItem implements CompletionItem {
 
     private static ImageIcon ICON;
     private String text;
-    private AttributeInCompletion attribute;
+    private AttributeInCompletion attributeInCompletion;
 
-    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attribute, String text) {
+    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, String text) {
         this.text = text;
-        this.attribute = attribute;
-        ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("iconBase").toString()));
+        this.attributeInCompletion = attributeInCompletion;
+        ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
     }
 
     @Override
     public void defaultAction(JTextComponent jtc) {
         try {
             StyledDocument doc = (StyledDocument) jtc.getDocument();
-            int start = this.attribute.getLineOffset() + attribute.getStart();
-            doc.remove(start, attribute.getValue().length());
+            int start = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
+            doc.remove(start, attributeInCompletion.getValue().length());
             doc.insertString(start, getText().substring(0, 2), null);
-            // Ferme la boite de completion
+            // Close box completion
             Completion.get().hideAll();
         } catch (BadLocationException ex) {
             Exceptions.printStackTrace(ex);

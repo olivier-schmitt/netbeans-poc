@@ -16,7 +16,7 @@ public final class AttributeMatcher {
     public static String LANG_PATTERN;
 
     public AttributeMatcher(Map map) {
-        LANG_PATTERN = "(" + map.get("attribute").toString() + ")=\"([a-z]*)\"";
+        LANG_PATTERN = String.format("(%s)=\"([a-zA-Z0-9]*)\"",map.get("attribute").toString());
     }
 
     public boolean containsRef(String line) {
@@ -24,7 +24,6 @@ public final class AttributeMatcher {
             return false;
         }
         Scanner scanner = new Scanner(line);
-
         return scanner.findInLine(LANG_PATTERN) != null;
     }
     

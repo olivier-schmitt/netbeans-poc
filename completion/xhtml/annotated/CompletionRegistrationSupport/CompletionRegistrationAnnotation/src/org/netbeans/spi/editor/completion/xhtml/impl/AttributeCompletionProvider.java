@@ -1,19 +1,12 @@
 package org.netbeans.spi.editor.completion.xhtml.impl;
 
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
@@ -24,16 +17,13 @@ import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
+import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider.CompletionConfigurationException;
 import org.openide.text.NbDocument;
 import org.openide.util.Exceptions;
 
 /**
- * <p> Fourni la complétion pour l'attribut lang. </p>
- *
- * <p> Les codes sont issus de la norme ISO639-1 et sont stockés dans un fichier
- * CSV. </p>
  *
  * @author oschmitt
  */

@@ -11,14 +11,30 @@ public @interface AttributeCompletionRegistration {
 
     String id();
 
-    String iconBase();
+    /**
+     * <p>Icon classpath.</p>
+     * 
+     * @return Icon classpath.
+     */
+    String icon();
 
+    /**
+     * <p>Defines the attribute name upon which completion should occur.</p>
+     * 
+     * @return The attribute name
+     */
     String attribute();
 
-    /*
-     * Content is an URI : first part tells what component to use.
+    /**
+     * <p>Content is an URI : scheme tells what completion item provider to use.</p>
+     * 
+     * <p>A provider is a concrete class implementing CompletionItemProvider.</p>
+     * 
+     * <p>
+     * Sample URI : <pre>csv:jee/architect/cookbook/netbeans/iso6391/ISO6391.csv</pre>
+     * </p>
+     * 
+     * @return The URI
      */
     String content();
-
-    String contentType() default "";
 }

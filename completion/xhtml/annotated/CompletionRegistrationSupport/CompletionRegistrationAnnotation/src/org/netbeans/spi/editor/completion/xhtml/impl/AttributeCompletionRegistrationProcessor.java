@@ -52,7 +52,7 @@ public class AttributeCompletionRegistrationProcessor extends LayerGeneratingPro
         LayerBuilder.File layerFile = layerBuilder.file(String.format(
                 "Editors/text/xhtml/CompletionProviders/%s.instance",
                 attributeCompletionRegistration.id()));
-        layerFile.stringvalue("iconBase", attributeCompletionRegistration.iconBase());
+        layerFile.stringvalue("icon", attributeCompletionRegistration.icon());
         layerFile.stringvalue("attribute", attributeCompletionRegistration.attribute());
         layerFile.stringvalue("content", attributeCompletionRegistration.content());
         layerFile.methodvalue("instanceCreate", "org.netbeans.spi.editor.completion.xhtml.impl.AttributeCompletionProvider", "create");
