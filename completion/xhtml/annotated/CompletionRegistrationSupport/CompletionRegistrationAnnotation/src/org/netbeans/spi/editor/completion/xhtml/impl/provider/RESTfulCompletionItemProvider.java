@@ -4,16 +4,11 @@
  */
 package org.netbeans.spi.editor.completion.xhtml.impl.provider;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
 
 /**
  *
@@ -21,10 +16,6 @@ import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
  */
 public class RESTfulCompletionItemProvider implements CompletionItemProvider {
 
-    @Override
-    public List<CompletionItem> getCompletionItem(AttributeInCompletion attribute, Map annotationConfMap) {
-        return Collections.EMPTY_LIST;
-    }
     
     @Override
     public boolean accept(String scheme) {
@@ -35,5 +26,10 @@ public class RESTfulCompletionItemProvider implements CompletionItemProvider {
     public void configure(URI uri) throws CompletionConfigurationException {
         
         
+    }
+
+    @Override
+    public List<CompletionItemValue> getCompletionItemValues(String query) {
+        return Collections.EMPTY_LIST;
     }
 }

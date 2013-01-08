@@ -4,7 +4,6 @@ package org.netbeans.spi.editor.completion.xhtml.impl;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
 
 /**
  * <p>Classe utilitaire pour extraire l'attribut lang.</p>

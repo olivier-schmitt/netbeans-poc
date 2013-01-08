@@ -3,8 +3,6 @@ package org.netbeans.spi.editor.completion.xhtml.api;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
-import org.netbeans.spi.editor.completion.CompletionItem;
 
 /**
  * <p>Defines a completion item provider.</p>
@@ -24,12 +22,12 @@ public interface CompletionItemProvider {
     boolean accept(String scheme);
     
     /**
+     * <p>Provide completion item values for completion list population.</p>
      * 
-     * @param attribute
-     * @param annotationConfMap
-     * @return 
+     * @param query Current completion query
+     * @return A list of CompletionItemValue as a response to completion query
      */
-    List<CompletionItem> getCompletionItem(AttributeInCompletion attribute, Map annotationConfMap);
+    List<CompletionItemValue> getCompletionItemValues(String query);
 
     /**
      * <p>Configure current provider with URI.</p>

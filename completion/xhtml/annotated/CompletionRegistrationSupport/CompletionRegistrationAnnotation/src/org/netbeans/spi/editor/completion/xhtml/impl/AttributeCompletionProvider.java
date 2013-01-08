@@ -11,15 +11,14 @@ import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
-import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.CompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider.CompletionConfigurationException;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
 import org.openide.text.NbDocument;
 import org.openide.util.Exceptions;
 
@@ -46,16 +45,16 @@ public final class AttributeCompletionProvider implements CompletionProvider {
         }
     }
 
-    private CompletionItemProvider findItemProvider(String content) 
+    private CompletionItemProvider findItemProvider(String content)
             throws IOException, URISyntaxException, CompletionConfigurationException {
-        
-        URI contentUri = new URI(content);        
+
+        URI contentUri = new URI(content);
         String scheme = contentUri.getScheme();
         ServiceLoader<CompletionItemProvider> completionItemProviderLoader = ServiceLoader.load(CompletionItemProvider.class);
         Iterator<CompletionItemProvider> completionItemProviderIt = completionItemProviderLoader.iterator();
-        while(completionItemProviderIt.hasNext()){
+        while (completionItemProviderIt.hasNext()) {
             CompletionItemProvider candidateCompletionItemProvider = completionItemProviderIt.next();
-            if(candidateCompletionItemProvider.accept(scheme)){
+            if (candidateCompletionItemProvider.accept(scheme)) {
                 candidateCompletionItemProvider.configure(contentUri);
                 return candidateCompletionItemProvider;
             }
@@ -88,8 +87,13 @@ public final class AttributeCompletionProvider implements CompletionProvider {
                     @Override
                     protected void query(CompletionResultSet completionResultSet,
                             Document document, int caretOffset) {
-                        List<CompletionItem> providedItems= AttributeCompletionProvider.this.completionItemProvider.getCompletionItem(attributeInCompletion,annotationConfMap);
-                        completionResultSet.addAllItems(providedItems);
+                        
+                        String query = attributeInCompletion.getValue();
+                        List<CompletionItemValue> providedItemsValues = AttributeCompletionProvider.this.completionItemProvider.getCompletionItemValues(query);
+                        for (CompletionItemValue completionItemValue : providedItemsValues) {
+                            AttributeCompletionItem attributeCompletionItem = new AttributeCompletionItem(annotationConfMap, attributeInCompletion, completionItemValue);
+                            completionResultSet.addItem(attributeCompletionItem);
+                        }
                         completionResultSet.finish();
                     }
                 });

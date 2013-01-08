@@ -7,13 +7,9 @@ package org.netbeans.spi.editor.completion.xhtml.impl.provider;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
 import org.openide.util.Exceptions;
 
 /**
@@ -23,17 +19,6 @@ import org.openide.util.Exceptions;
 public class BeanCompletionItemProvider implements CompletionItemProvider {
 
     Object bean;
-    
-    @Override
-    public List<CompletionItem> getCompletionItem(AttributeInCompletion attribute, Map annotationConfMap) {
-        try {
-            Method method = bean.getClass().getMethod("getCompletionItem", AttributeInCompletion.class,Map.class);
-            return (List<CompletionItem>) method.invoke(bean,attribute,annotationConfMap);
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return Collections.EMPTY_LIST;
-    }
 
     @Override
     public boolean accept(String scheme) {
@@ -49,5 +34,16 @@ public class BeanCompletionItemProvider implements CompletionItemProvider {
         } catch (Exception ex) {
             throw new CompletionConfigurationException(ex);
         }
+    }
+
+    @Override
+    public List<CompletionItemValue> getCompletionItemValues(String query) {
+        try {
+            Method method = bean.getClass().getMethod("getCompletionItemValues", String.class);
+            return (List<CompletionItemValue>) method.invoke(bean,query);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 }

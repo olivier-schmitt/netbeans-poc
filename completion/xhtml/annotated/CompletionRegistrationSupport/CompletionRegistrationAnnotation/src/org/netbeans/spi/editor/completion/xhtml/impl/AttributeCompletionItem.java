@@ -1,4 +1,4 @@
-package org.netbeans.spi.editor.completion.xhtml.api;
+package org.netbeans.spi.editor.completion.xhtml.impl;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +13,7 @@ import org.netbeans.api.editor.completion.Completion;
 import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 
@@ -27,10 +28,18 @@ public class AttributeCompletionItem implements CompletionItem {
 
     private static ImageIcon ICON;
     private String text;
+    private String value;
     private AttributeInCompletion attributeInCompletion;
 
     public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, String text) {
         this.text = text;
+        this.attributeInCompletion = attributeInCompletion;
+        ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
+    }
+
+    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, CompletionItemValue completionItemValue) {
+        this.text = completionItemValue.getLabel();
+        this.value = completionItemValue.getValue();
         this.attributeInCompletion = attributeInCompletion;
         ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
     }
@@ -41,7 +50,7 @@ public class AttributeCompletionItem implements CompletionItem {
             StyledDocument doc = (StyledDocument) jtc.getDocument();
             int start = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
             doc.remove(start, attributeInCompletion.getValue().length());
-            doc.insertString(start, getText().substring(0, 2), null);
+            doc.insertString(start,this.value , null);
             // Close box completion
             Completion.get().hideAll();
         } catch (BadLocationException ex) {

@@ -1,4 +1,4 @@
-package org.netbeans.spi.editor.completion.xhtml.api;
+package org.netbeans.spi.editor.completion.xhtml.impl;
 
 /**
  * <p>

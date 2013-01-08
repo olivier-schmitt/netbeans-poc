@@ -9,14 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import org.netbeans.spi.editor.completion.CompletionItem;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeInCompletion;
-import org.netbeans.spi.editor.completion.xhtml.api.AttributeCompletionItem;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
 
 /**
  *
@@ -24,19 +21,7 @@ import org.netbeans.spi.editor.completion.xhtml.api.AttributeCompletionItem;
  */
 public class CSVCompletionItemProvider implements CompletionItemProvider {
 
-    private Set<String> values = new TreeSet<String>();
-
-    @Override
-    public List<CompletionItem> getCompletionItem(AttributeInCompletion attributeInCompletion, Map annotationConfMap) {
-        String query = attributeInCompletion.getValue();
-        List<CompletionItem> result = new ArrayList<CompletionItem>();
-        for (String value : values) {
-            if (value.startsWith(query)) {
-                result.add(new AttributeCompletionItem(annotationConfMap, attributeInCompletion, value));
-            }
-        }
-        return result;
-    }
+    private Map<String, String> labelAndValues = new HashMap<String, String>();
 
     @Override
     public boolean accept(String scheme) {
@@ -48,17 +33,38 @@ public class CSVCompletionItemProvider implements CompletionItemProvider {
 
         String path = uri.getSchemeSpecificPart();
         try {
+
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream inputStream = classLoader.getResourceAsStream(path);
             if (inputStream != null) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String line = null;
                 while ((line = bufferedReader.readLine()) != null) {
-                    values.add(line);
+                    if (line.contains(";")) {
+                        String[] valueAndLabel = line.split(";");
+                        String value = valueAndLabel[0];
+                        String label = valueAndLabel[1];
+                        labelAndValues.put(value, label);
+                    } else {
+                        labelAndValues.put(line, line);
+                    }
                 }
             }
+
         } catch (Exception e) {
             throw new CompletionConfigurationException(e);
         }
+    }
+
+    @Override
+    public List<CompletionItemValue> getCompletionItemValues(String query) {
+        List<CompletionItemValue> result = new ArrayList<CompletionItemValue>();
+        for (String value : this.labelAndValues.keySet()) {
+            if (value.startsWith(query)) {
+                String label = this.labelAndValues.get(value);
+                result.add(new CompletionItemValue(value, label));
+            }
+        }
+        return result;
     }
 }
