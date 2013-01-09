@@ -2,21 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.netbeans.spi.editor.completion.xhtml.impl.provider;
+package org.netbeans.spi.editor.completion.xhtml.impl.service;
 
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author oschmitt
  */
-public class BeanCompletionItemProvider implements CompletionItemProvider {
+public class BeanCompletionItemService implements CompletionItemService {
 
     Object bean;
 
@@ -37,10 +37,10 @@ public class BeanCompletionItemProvider implements CompletionItemProvider {
     }
 
     @Override
-    public List<CompletionItemValue> getCompletionItemValues(String query) {
+    public List<CompletionItemData> getDatas(String query) {
         try {
             Method method = bean.getClass().getMethod("getCompletionItemValues", String.class);
-            return (List<CompletionItemValue>) method.invoke(bean,query);
+            return (List<CompletionItemData>) method.invoke(bean,query);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }

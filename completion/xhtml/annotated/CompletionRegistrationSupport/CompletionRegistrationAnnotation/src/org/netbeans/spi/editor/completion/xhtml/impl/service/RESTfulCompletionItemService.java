@@ -2,19 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.netbeans.spi.editor.completion.xhtml.impl.provider;
+package org.netbeans.spi.editor.completion.xhtml.impl.service;
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
 
 /**
  *
  * @author oschmitt
  */
-public class RESTfulCompletionItemProvider implements CompletionItemProvider {
+public class RESTfulCompletionItemService implements CompletionItemService {
 
     
     @Override
@@ -29,7 +29,7 @@ public class RESTfulCompletionItemProvider implements CompletionItemProvider {
     }
 
     @Override
-    public List<CompletionItemValue> getCompletionItemValues(String query) {
+    public List<CompletionItemData> getDatas(String query) {
         return Collections.EMPTY_LIST;
     }
 }

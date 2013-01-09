@@ -11,7 +11,7 @@ import java.util.List;
  * 
  * @author oschmitt
  */
-public interface CompletionItemProvider {
+public interface CompletionItemService extends CompletionItemDataProvider {
     
     /**
      * <p>Is this provider able to serve content with this scheme ?</p>
@@ -20,14 +20,6 @@ public interface CompletionItemProvider {
      * @return <code>true</code> if this provider match the scheme
      */
     boolean accept(String scheme);
-    
-    /**
-     * <p>Provide completion item values for completion list population.</p>
-     * 
-     * @param query Current completion query
-     * @return A list of CompletionItemValue as a response to completion query
-     */
-    List<CompletionItemValue> getCompletionItemValues(String query);
 
     /**
      * <p>Configure current provider with URI.</p>
@@ -35,7 +27,7 @@ public interface CompletionItemProvider {
      * <p>The scheme URI must be accepted by the provider.</p>
      * 
      * @param uri URI of content
-     * @throws org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider.CompletionConfigurationException 
+     * @throws org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService.CompletionConfigurationException 
      */
     void configure(URI uri) throws CompletionConfigurationException;
     

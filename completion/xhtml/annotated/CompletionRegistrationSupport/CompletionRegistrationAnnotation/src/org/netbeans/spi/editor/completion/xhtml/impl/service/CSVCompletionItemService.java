@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.netbeans.spi.editor.completion.xhtml.impl.provider;
+package org.netbeans.spi.editor.completion.xhtml.impl.service;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
 
 /**
  *
  * @author oschmitt
  */
-public class CSVCompletionItemProvider implements CompletionItemProvider {
+public class CSVCompletionItemService implements CompletionItemService {
 
     private Map<String, String> labelAndValues = new HashMap<String, String>();
 
@@ -57,12 +57,12 @@ public class CSVCompletionItemProvider implements CompletionItemProvider {
     }
 
     @Override
-    public List<CompletionItemValue> getCompletionItemValues(String query) {
-        List<CompletionItemValue> result = new ArrayList<CompletionItemValue>();
+    public List<CompletionItemData> getDatas(String query) {
+        List<CompletionItemData> result = new ArrayList<CompletionItemData>();
         for (String value : this.labelAndValues.keySet()) {
             if (value.startsWith(query)) {
                 String label = this.labelAndValues.get(value);
-                result.add(new CompletionItemValue(value, label));
+                result.add(new CompletionItemData(value, label));
             }
         }
         return result;

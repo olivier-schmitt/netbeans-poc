@@ -16,9 +16,9 @@ import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemProvider.CompletionConfigurationException;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService.CompletionConfigurationException;
 import org.openide.text.NbDocument;
 import org.openide.util.Exceptions;
 
@@ -29,7 +29,7 @@ import org.openide.util.Exceptions;
 public final class AttributeCompletionProvider implements CompletionProvider {
 
     private final Map annotationConfMap;
-    private CompletionItemProvider completionItemProvider;
+    private CompletionItemService completionItemService;
 
     static AttributeCompletionProvider create(Map m) {
         return new AttributeCompletionProvider(m);
@@ -39,24 +39,24 @@ public final class AttributeCompletionProvider implements CompletionProvider {
         this.annotationConfMap = annotationConfMap;
         try {
             String content = annotationConfMap.get("content").toString();
-            this.completionItemProvider = findItemProvider(content);
+            this.completionItemService = findCompletionItemService(content);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private CompletionItemProvider findItemProvider(String content)
+    private CompletionItemService findCompletionItemService(String content)
             throws IOException, URISyntaxException, CompletionConfigurationException {
 
         URI contentUri = new URI(content);
         String scheme = contentUri.getScheme();
-        ServiceLoader<CompletionItemProvider> completionItemProviderLoader = ServiceLoader.load(CompletionItemProvider.class);
-        Iterator<CompletionItemProvider> completionItemProviderIt = completionItemProviderLoader.iterator();
-        while (completionItemProviderIt.hasNext()) {
-            CompletionItemProvider candidateCompletionItemProvider = completionItemProviderIt.next();
-            if (candidateCompletionItemProvider.accept(scheme)) {
-                candidateCompletionItemProvider.configure(contentUri);
-                return candidateCompletionItemProvider;
+        ServiceLoader<CompletionItemService> completionItemServiceLoader = ServiceLoader.load(CompletionItemService.class);
+        Iterator<CompletionItemService> completionItemServiceIt = completionItemServiceLoader.iterator();
+        while (completionItemServiceIt.hasNext()) {
+            CompletionItemService candidateCompletionItemService = completionItemServiceIt.next();
+            if (candidateCompletionItemService.accept(scheme)) {
+                candidateCompletionItemService.configure(contentUri);
+                return candidateCompletionItemService;
             }
         }
         return null;
@@ -89,9 +89,9 @@ public final class AttributeCompletionProvider implements CompletionProvider {
                             Document document, int caretOffset) {
                         
                         String query = attributeInCompletion.getValue();
-                        List<CompletionItemValue> providedItemsValues = AttributeCompletionProvider.this.completionItemProvider.getCompletionItemValues(query);
-                        for (CompletionItemValue completionItemValue : providedItemsValues) {
-                            AttributeCompletionItem attributeCompletionItem = new AttributeCompletionItem(annotationConfMap, attributeInCompletion, completionItemValue);
+                        List<CompletionItemData> providedItemsValues = AttributeCompletionProvider.this.completionItemService.getDatas(query);
+                        for (CompletionItemData completionItemData : providedItemsValues) {
+                            AttributeCompletionItem attributeCompletionItem = new AttributeCompletionItem(annotationConfMap, attributeInCompletion, completionItemData);
                             completionResultSet.addItem(attributeCompletionItem);
                         }
                         completionResultSet.finish();

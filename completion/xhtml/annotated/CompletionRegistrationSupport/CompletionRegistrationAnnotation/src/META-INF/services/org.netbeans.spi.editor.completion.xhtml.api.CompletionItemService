@@ -1,0 +1,4 @@
+org.netbeans.spi.editor.completion.xhtml.impl.service.CSVCompletionItemService
+org.netbeans.spi.editor.completion.xhtml.impl.service.RawCompletionItemService
+org.netbeans.spi.editor.completion.xhtml.impl.service.BeanCompletionItemService
+org.netbeans.spi.editor.completion.xhtml.impl.service.RESTfulCompletionItemService

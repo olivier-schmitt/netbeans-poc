@@ -7,21 +7,26 @@ import java.awt.event.KeyEvent;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
 import org.netbeans.api.editor.completion.Completion;
 import org.netbeans.spi.editor.completion.CompletionItem;
+import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
+import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
+import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
-import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemValue;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 
 /**
  * <p>Defines an XHTML attribute completion item.</p>
- * 
- * <p>This class is a generic completion item : it's useful for most attribute completion use cases.</p>
- * 
+ *
+ * <p>This class is a generic completion item : it's useful for most attribute
+ * completion use cases.</p>
+ *
  * @author oschmitt
  */
 public class AttributeCompletionItem implements CompletionItem {
@@ -29,17 +34,13 @@ public class AttributeCompletionItem implements CompletionItem {
     private static ImageIcon ICON;
     private String text;
     private String value;
+    private final String documentation;
     private AttributeInCompletion attributeInCompletion;
 
-    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, String text) {
-        this.text = text;
-        this.attributeInCompletion = attributeInCompletion;
-        ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
-    }
-
-    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, CompletionItemValue completionItemValue) {
-        this.text = completionItemValue.getLabel();
-        this.value = completionItemValue.getValue();
+    public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, CompletionItemData completionItemData) {
+        this.text = completionItemData.getLabel();
+        this.value = completionItemData.getValue();
+        this.documentation = completionItemData.getDocumentation();
         this.attributeInCompletion = attributeInCompletion;
         ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
     }
@@ -50,7 +51,7 @@ public class AttributeCompletionItem implements CompletionItem {
             StyledDocument doc = (StyledDocument) jtc.getDocument();
             int start = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
             doc.remove(start, attributeInCompletion.getValue().length());
-            doc.insertString(start,this.value , null);
+            doc.insertString(start, this.value, null);
             // Close box completion
             Completion.get().hideAll();
         } catch (BadLocationException ex) {
@@ -76,7 +77,17 @@ public class AttributeCompletionItem implements CompletionItem {
 
     @Override
     public CompletionTask createDocumentationTask() {
-        return null;
+        if (this.documentation == null) {
+            return null;
+        } else {
+            return new AsyncCompletionTask(new AsyncCompletionQuery() {
+                @Override
+                protected void query(CompletionResultSet completionResultSet, Document document, int i) {
+                    completionResultSet.setDocumentation(new AttributeCompletionItemDocumentation(AttributeCompletionItem.this.documentation));
+                    completionResultSet.finish();
+                }
+            });
+        }
     }
 
     protected Color getColor() {
