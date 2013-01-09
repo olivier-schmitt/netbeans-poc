@@ -4,9 +4,13 @@ package org.netbeans.spi.editor.completion.xhtml.api;
 import java.net.URI;
 
 /**
- * <p>Defines a completion item provider.</p>
+ * <p>Defines a completion item service.</p>
  * 
- * <p>One must check to provider if its able to server completion items.</p>
+ * <p>A service should expose accept method and accept URI with a specific scheme.</p>
+ *
+ * <p>The configure method is called with complete URI.</p>
+ * 
+ * <p>Each service has its own way to be configured.</p>
  * 
  * @author oschmitt
  */

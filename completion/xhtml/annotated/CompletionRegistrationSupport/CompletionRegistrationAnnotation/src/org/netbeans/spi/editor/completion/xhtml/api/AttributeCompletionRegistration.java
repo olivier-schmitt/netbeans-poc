@@ -5,6 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * <p>Register a completion for attribute.</p>
+ * 
+ * 
+ * @author oschmitt
+ */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.PACKAGE)
 public @interface AttributeCompletionRegistration {
@@ -26,9 +33,9 @@ public @interface AttributeCompletionRegistration {
     String attribute();
 
     /**
-     * <p>Content is an URI : scheme tells what completion item provider to use.</p>
+     * <p>Content is an URI : scheme tells what completion item service to use.</p>
      * 
-     * <p>A provider is a concrete class implementing CompletionItemProvider.</p>
+     * <p>A service is a concrete class implementing CompletionItemService.</p>
      * 
      * <p>
      * Sample URI : <pre>csv:jee/architect/cookbook/netbeans/iso6391/ISO6391.csv</pre>
@@ -48,6 +55,4 @@ public @interface AttributeCompletionRegistration {
      * @return The classname
      */
     String action() default "";
-
-    
 }

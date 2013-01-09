@@ -2,7 +2,8 @@
 package org.netbeans.spi.editor.completion.xhtml.api;
 
 /**
- *
+ * <p>Defines all data useful to completion item.</p>
+ * 
  * @author oschmitt
  */
 public class CompletionItemData {
