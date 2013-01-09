@@ -2,7 +2,6 @@
 package org.netbeans.spi.editor.completion.xhtml.api;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * <p>Defines a completion item provider.</p>

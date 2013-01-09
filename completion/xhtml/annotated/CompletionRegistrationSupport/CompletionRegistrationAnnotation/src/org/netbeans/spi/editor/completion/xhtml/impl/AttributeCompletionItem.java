@@ -17,6 +17,7 @@ import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
+import org.netbeans.spi.editor.completion.xhtml.api.CompleteAction;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
@@ -32,26 +33,41 @@ import org.openide.util.ImageUtilities;
 public class AttributeCompletionItem implements CompletionItem {
 
     private static ImageIcon ICON;
-    private String text;
-    private String value;
+    private final String text;
+    private final String value;
     private final String documentation;
-    private AttributeInCompletion attributeInCompletion;
+    private final String action;
+    private final AttributeInCompletion attributeInCompletion;
 
     public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, CompletionItemData completionItemData) {
         this.text = completionItemData.getLabel();
         this.value = completionItemData.getValue();
         this.documentation = completionItemData.getDocumentation();
         this.attributeInCompletion = attributeInCompletion;
+        this.action = (String) annotationConfMap.get("action");
         ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
     }
 
     @Override
     public void defaultAction(JTextComponent jtc) {
         try {
-            StyledDocument doc = (StyledDocument) jtc.getDocument();
-            int start = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
-            doc.remove(start, attributeInCompletion.getValue().length());
-            doc.insertString(start, this.value, null);
+            StyledDocument styledDocument = (StyledDocument) jtc.getDocument();
+            int position = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
+            int length = attributeInCompletion.getValue().length();
+            CompletionItemData completionItemData = new CompletionItemData(this.value,this.text);
+            if(this.action == null){
+                DefaultCompleteAction defaultCompleteAction = new DefaultCompleteAction();
+                defaultCompleteAction.perform(completionItemData,styledDocument, position, length);
+            } else {
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                try {
+                    CompleteAction completeAction = (CompleteAction) classLoader.loadClass(this.action).newInstance();
+                    completeAction.perform(completionItemData, styledDocument, position, length);
+                } catch (Exception ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            
             // Close box completion
             Completion.get().hideAll();
         } catch (BadLocationException ex) {

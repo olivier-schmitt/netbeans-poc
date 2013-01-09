@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.regex.MatchResult;
 
 /**
- * <p>Classe utilitaire pour extraire l'attribut lang.</p>
+ * <p>Utility class to find attribute in document current line.</p>
  * 
  * @author oschmitt
  */
@@ -26,9 +26,7 @@ public final class AttributeMatcher {
         return scanner.findInLine(LANG_PATTERN) != null;
     }
     
-    
     public AttributeInCompletion getValue(String line, int caret) {
-
         Scanner scanner = new Scanner(line);
         while (true) {
             scanner.findInLine(LANG_PATTERN);

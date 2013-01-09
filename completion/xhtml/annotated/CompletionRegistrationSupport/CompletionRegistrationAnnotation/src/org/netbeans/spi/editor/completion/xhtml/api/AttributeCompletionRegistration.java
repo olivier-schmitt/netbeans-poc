@@ -34,7 +34,20 @@ public @interface AttributeCompletionRegistration {
      * Sample URI : <pre>csv:jee/architect/cookbook/netbeans/iso6391/ISO6391.csv</pre>
      * </p>
      * 
+     * <p>An URI always starts with a scheme and requires a following part.</p>
+     * <p>Smallest URI looks like "myscheme:nop" (nop means no null here).</p>
+     * 
      * @return The URI
      */
     String content();
+
+    /**
+     * <p>A full classname.</p>
+     * <p>The choosen class must implements CompleteAction.</p>
+     * 
+     * @return The classname
+     */
+    String action() default "";
+
+    
 }
