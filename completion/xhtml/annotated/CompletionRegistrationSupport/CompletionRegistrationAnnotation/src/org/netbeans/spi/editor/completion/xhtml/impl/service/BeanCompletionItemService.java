@@ -4,11 +4,11 @@
  */
 package org.netbeans.spi.editor.completion.xhtml.impl.service;
 
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemData;
+import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemDataProvider;
 import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
 import org.openide.util.Exceptions;
 
@@ -18,7 +18,7 @@ import org.openide.util.Exceptions;
  */
 public class BeanCompletionItemService implements CompletionItemService {
 
-    Object bean;
+    CompletionItemDataProvider bean;
 
     @Override
     public boolean accept(String scheme) {
@@ -30,7 +30,7 @@ public class BeanCompletionItemService implements CompletionItemService {
         try {
             String beanClassName = uri.getSchemeSpecificPart();
             Class beanClass = Thread.currentThread().getContextClassLoader().loadClass(beanClassName);
-            this.bean = beanClass.newInstance();
+            this.bean = (CompletionItemDataProvider)beanClass.newInstance();
         } catch (Exception ex) {
             throw new CompletionConfigurationException(ex);
         }
@@ -39,8 +39,7 @@ public class BeanCompletionItemService implements CompletionItemService {
     @Override
     public List<CompletionItemData> getDatas(String query) {
         try {
-            Method method = bean.getClass().getMethod("getCompletionItemValues", String.class);
-            return (List<CompletionItemData>) method.invoke(bean,query);
+            return this.bean.getDatas(query);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }

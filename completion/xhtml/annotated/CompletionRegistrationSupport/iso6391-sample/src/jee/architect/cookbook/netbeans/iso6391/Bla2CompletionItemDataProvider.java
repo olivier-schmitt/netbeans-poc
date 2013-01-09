@@ -13,7 +13,7 @@ import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemDataProvider;
  *
  * @author oschmitt
  */
-public class Bla2CompletionItemProvider implements CompletionItemDataProvider {
+public class Bla2CompletionItemDataProvider implements CompletionItemDataProvider {
 
     @Override
     public List<CompletionItemData> getDatas(String query) {
