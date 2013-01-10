@@ -33,18 +33,12 @@ import org.openide.util.ImageUtilities;
 public class AttributeCompletionItem implements CompletionItem {
 
     private static ImageIcon ICON;
-    private final String text;
-    private final String value;
-    private final String documentation;
-    private final String action;
     private final AttributeInCompletion attributeInCompletion;
+    private final CompletionItemData completionItemData;
 
     public AttributeCompletionItem(Map annotationConfMap, AttributeInCompletion attributeInCompletion, CompletionItemData completionItemData) {
-        this.text = completionItemData.getLabel();
-        this.value = completionItemData.getValue();
-        this.documentation = completionItemData.getDocumentation();
+        this.completionItemData = completionItemData;
         this.attributeInCompletion = attributeInCompletion;
-        this.action = (String) annotationConfMap.get("action");
         ICON = new ImageIcon(ImageUtilities.loadImage(annotationConfMap.get("icon").toString()));
     }
 
@@ -54,20 +48,13 @@ public class AttributeCompletionItem implements CompletionItem {
             StyledDocument styledDocument = (StyledDocument) jtc.getDocument();
             int position = this.attributeInCompletion.getLineOffset() + attributeInCompletion.getStart();
             int length = attributeInCompletion.getValue().length();
-            CompletionItemData completionItemData = new CompletionItemData(this.value,this.text);
-            if(this.action == null){
+            final CompleteAction completeAction = this.completionItemData.getCompleteAction();
+            if (completeAction == null) {
                 DefaultCompleteAction defaultCompleteAction = new DefaultCompleteAction();
-                defaultCompleteAction.perform(completionItemData,styledDocument, position, length);
+                defaultCompleteAction.perform(completionItemData, styledDocument, position, length);
             } else {
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                try {
-                    CompleteAction completeAction = (CompleteAction) classLoader.loadClass(this.action).newInstance();
-                    completeAction.perform(completionItemData, styledDocument, position, length);
-                } catch (Exception ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+                completeAction.perform(completionItemData, styledDocument, position, length);
             }
-            
             // Close box completion
             Completion.get().hideAll();
         } catch (BadLocationException ex) {
@@ -93,13 +80,14 @@ public class AttributeCompletionItem implements CompletionItem {
 
     @Override
     public CompletionTask createDocumentationTask() {
-        if (this.documentation == null) {
+        final String documentation = this.completionItemData.getDocumentation();
+        if (documentation == null) {
             return null;
         } else {
             return new AsyncCompletionTask(new AsyncCompletionQuery() {
                 @Override
                 protected void query(CompletionResultSet completionResultSet, Document document, int i) {
-                    completionResultSet.setDocumentation(new AttributeCompletionItemDocumentation(AttributeCompletionItem.this.documentation));
+                    completionResultSet.setDocumentation(new AttributeCompletionItemDocumentation(documentation));
                     completionResultSet.finish();
                 }
             });
@@ -136,6 +124,6 @@ public class AttributeCompletionItem implements CompletionItem {
     }
 
     private String getText() {
-        return this.text;
+        return this.completionItemData.getLabel();
     }
 }

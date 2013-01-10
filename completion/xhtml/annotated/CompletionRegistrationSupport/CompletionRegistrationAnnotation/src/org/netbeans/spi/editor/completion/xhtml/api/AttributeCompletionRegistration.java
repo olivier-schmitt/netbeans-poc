@@ -47,12 +47,4 @@ public @interface AttributeCompletionRegistration {
      * @return The URI
      */
     String content();
-
-    /**
-     * <p>A full classname.</p>
-     * <p>The choosen class must implements CompleteAction.</p>
-     * 
-     * @return The classname
-     */
-    String action() default "";
 }

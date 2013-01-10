@@ -4,8 +4,7 @@
         id = "jee-architect-cookbook-netbeans-iso6391-CSVCompletionItemService",
         attribute = "lang",
         icon = "jee/architect/cookbook/netbeans/iso6391/bubble.png",
-        content = "csv:jee/architect/cookbook/netbeans/iso6391/ISO6391.csv",
-        action = "jee.architect.cookbook.netbeans.iso6391.CustomCompleteAction"),
+        content = "csv:jee/architect/cookbook/netbeans/iso6391/ISO6391.csv"),
    
     @AttributeCompletionRegistration(
         id = "jee-architect-cookbook-netbeans-iso6391-RESTCompletionItemService",

@@ -20,16 +20,28 @@ import org.netbeans.spi.editor.completion.xhtml.api.CompletionItemService;
  * @author oschmitt
  */
 public class ISO6391CompletionItemService implements CompletionItemService {
-    
+
     private Map<String, String> labelAndValues = new HashMap<String, String>();
-    
+    final static ISO6391CompleteAction ISO6391_ACTION = new ISO6391CompleteAction();
+
     @Override
     public List<CompletionItemData> getDatas(String query) {
-       List<CompletionItemData> result = new ArrayList<CompletionItemData>();
+
+        List<CompletionItemData> result = new ArrayList<CompletionItemData>();
+        
         for (String value : this.labelAndValues.keySet()) {
+        
             if (value.startsWith(query)) {
                 String label = this.labelAndValues.get(value);
-                result.add(new CompletionItemData(value, label,String.format("Language code for %s is %s",label,value)));
+
+                CompletionItemData completionItemData = new CompletionItemData(value,
+                        label,
+                        String.format("Language code for %s is %s",
+                        label,
+                        value));
+                completionItemData.setCompleteAction(ISO6391_ACTION);
+
+                result.add(completionItemData);
             }
         }
         return result;
